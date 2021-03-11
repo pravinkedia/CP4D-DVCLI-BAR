@@ -56,6 +56,71 @@
     /opt/dv/current/bar/scripts/dv-caching-bar.sh false
     rm -rf /mnt/marker_files/.bar_restored.txt
 
+### Backup Example Command
+
+    oc scale --replicas=0 deployment dv-caching dv-api dv-unified-console
+    ./dvcli.sh -o bar -a backup -n cpd30 --storage-class ibmc-file-gold-gid
+    oc scale --replicas=1 deployment dv-caching dv-api dv-unified-console
+
+### List Backup Example Command
+
+    ./dvcli.sh -o bar -a list -n cpd30 --storage-class ibmc-file-gold-gid
+
+### Restore Example Commnad
+
+    ./dvcli.sh -o bar -a restore -n cpd30 --storage-class ibmc-file-gold-gid
+
+### Check Backup Files and Space
+
+[bigsql@dv-test-job-5pfw2 /]$ df -h
+
+Filesystem                                                                              Size  Used Avail Use% Mounted on
+
+overlay                                                                                  99G   47G   47G  50% /
+
+tmpfs                                                                                    64M     0   64M   0% /dev
+
+tmpfs                                                                                    32G     0   32G   0% /sys/fs/cgroup
+
+shm                                                                                      64M     0   64M   0% /dev/shm
+
+/dev/mapper/docker_data                                                                  99G   47G   47G  50% /etc/hosts
+
+fsf-dal1301d-fz.adn.networklayer.com:/DSW02SEV2088584_472/data01/1.5.0                   20G   15G  5.3G  74% /mnt/PV/bar
+
+fsf-dal1302a-fz.service.softlayer.com:/DSW02SEV2088584_458/data01/1.5.0                  40G   11G   30G  27% /mnt/PV/versioned
+
+fsf-dal1302a-fz.service.softlayer.com:/DSW02SEV2088584_458/data01/uc_dsserver_shared     40G   11G   30G  27% /mnt/PV/versioned/uc_dsserver_shared
+
+fsf-dal1302a-fz.service.softlayer.com:/DSW02SEV2088584_458/data01/unified_console_data   40G   11G   30G  27% /mnt/PV/versioned/unified_console_data
+
+tmpfs                                                                                    32G   40K   32G   1% /run/secrets/kubernetes.io/serviceaccount
+
+tmpfs                                                                                    32G     0   32G   0% /proc/acpi
+
+tmpfs                                                                                    32G     0   32G   0% /proc/scsi
+
+tmpfs                                                                                    32G     0   32G   0% /sys/firmware
+
+[bigsql@dv-test-job-5pfw2 bar]$ ls -ltr *
+
+lrwxrwxrwx. 1 bigsql bigsql   48 Jan 22 20:05 dv_backup.tar.gz -> /mnt/PV/bar/2021-01-22-19-27-31/dv_backup.tar.gz
+
+2021-01-22-19-27-31:
+
+total 6243816
+
+-rw-r--r--. 1 bigsql bigsql   31780526 Jan 22 19:29 dv_backup_dv_metastore.tar.gz
+
+-rw-r--r--. 1 bigsql bigsql 3152485198 Jan 22 19:42 dv_backup_dv_engine.tar.gz
+
+drwxr-xr-x. 3 bigsql bigsql       4096 Jan 22 19:42 tmp
+
+-rw-r--r--. 1 root   root   3184300891 Jan 22 20:05 dv_backup.tar.gz
+
+[bigsql@dv-test-job-5pfw2 bar]$ pwd
+/mnt/PV/bar
+
 ### Backup documentation
 https://www.ibm.com/support/producthub/icpdata/docs/content/SSQNUZ_latest/svc-dv/backup-dv.html
 
