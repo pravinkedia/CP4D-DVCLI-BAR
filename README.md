@@ -126,56 +126,56 @@ e) Log in dv-test-job-xxx pod and update /mnt/PV/bar permission
     
 f) Exit dv-test-job-xxx pod, delete dv-test-job, rerun dvcli.sh with correct parameters to kick off a backup process.
 
-----------------------------------------------------------------------------
-apiVersion: batch/v1
-kind: Job
-metadata:
-name: dv-test-job
-labels:
-app: dv-test-job
-spec:
-template:
-metadata:
-labels:
-app: dv-test-job
-spec:
-restartPolicy: Never
-hostNetwork: false
-hostPID: false
-hostIPC: false
-securityContext:
-runAsNonRoot: true
-runAsUser: 1000322824 # bigsql user
-serviceAccountName: dv-bar-sa
-containers:
-- name: dv-test-pod
-image: image-registry.openshift-image-registry.svc:5000/cpd30/dv-init-volume:v1.5.0.0-217
-imagePullPolicy: Always
-command:
-- bash
-- -c
-- --
-- tail -f /dev/null
-env:
-- name: DV_PVC
-value: "dv-pvc"
-volumeMounts:
-- mountPath: /mnt/PV/versioned
-name: dv-data
-subPath: "1.5.0"
-- mountPath: /mnt/PV/versioned/uc_dsserver_shared
-name: dv-data
-subPath: uc_dsserver_shared
-- mountPath: /mnt/PV/versioned/unified_console_data
-name: dv-data
-subPath: unified_console_data
-- mountPath: /mnt/PV/bar
-name: dv-bar-data
-subPath: "1.5.0"
-volumes:
-- name: dv-data
-persistentVolumeClaim:
-claimName: dv-pvc
-- name: dv-bar-data
-persistentVolumeClaim:
-claimName: dv-bar-pvc
+           ----------------------------------------------------------------------------
+            apiVersion: batch/v1
+            kind: Job
+            metadata:
+            name: dv-test-job
+            labels:
+            app: dv-test-job
+            spec:
+                template:
+                metadata:
+                labels:
+                app: dv-test-job
+            spec:
+                restartPolicy: Never
+                hostNetwork: false
+                hostPID: false
+                hostIPC: false
+                securityContext:
+                    runAsNonRoot: true
+                    runAsUser: 1000322824 # bigsql user
+                    serviceAccountName: dv-bar-sa
+                containers:
+                - name: dv-test-pod
+                    image: image-registry.openshift-image-registry.svc:5000/cpd30/dv-init-volume:v1.5.0.0-217
+                    imagePullPolicy: Always
+                command:
+                    - bash
+                    - -c
+                    - --
+                    - tail -f /dev/null
+                env:
+                    - name: DV_PVC
+                    value: "dv-pvc"
+                    volumeMounts:
+                    - mountPath: /mnt/PV/versioned
+                    name: dv-data
+                    subPath: "1.5.0"
+                    - mountPath: /mnt/PV/versioned/uc_dsserver_shared
+                    name: dv-data
+                    subPath: uc_dsserver_shared
+                    - mountPath: /mnt/PV/versioned/unified_console_data
+                    name: dv-data
+                    subPath: unified_console_data
+                    - mountPath: /mnt/PV/bar
+                    name: dv-bar-data
+                    subPath: "1.5.0"
+                    volumes:
+                    - name: dv-data
+                    persistentVolumeClaim:
+                    claimName: dv-pvc
+                    - name: dv-bar-data
+                    persistentVolumeClaim:
+                    claimName: dv-bar-pvc
